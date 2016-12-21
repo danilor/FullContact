@@ -2,6 +2,8 @@
  * Created by danilo on 14/12/2016.
  */
 
+
+import UI.MainSearchForm;
 import daniloramirezcr.FullContact.FullContact;
 import daniloramirezcr.FullContact.ContactData;
 import daniloramirezcr.util.Config;
@@ -10,9 +12,14 @@ import daniloramirezcr.util.Console;
 public class Main {
 
     public static void main2( String[] args ){
+        MainSearchForm ms = new MainSearchForm();
 
+        ms.setVisible( true );
+        
+        
     }
-
+    
+   
     public static void main( String[] args ){
         Console.l("Welcome to the FullContact Magic Search System");
         String e = Console.readString("Please insert the email you want to search for: ");
@@ -78,4 +85,5 @@ public class Main {
 
 
     }
+    
 }

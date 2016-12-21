@@ -1,12 +1,11 @@
 package daniloramirezcr.SearchEngines;
 
-import com.sun.deploy.net.URLEncoder;
-import daniloramirezcr.util.Request;
+import java.net.URLEncoder;
+import daniloramirezcr.util.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
 import java.util.List;
 

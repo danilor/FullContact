@@ -3,6 +3,7 @@ package daniloramirezcr.FullContact;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import daniloramirezcr.SearchEngines.GoogleSearchEngine;
 import daniloramirezcr.util.Config;
 import daniloramirezcr.util.FileManagement;
