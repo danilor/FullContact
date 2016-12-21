@@ -25,6 +25,13 @@ public class ContactData {
     }
 
     public ContactData addPhoto(String type, String typeId, String typeName, String url){
+
+        for(int i = 0 ; i < this.photos.size() ; i++ ){
+            if( this.photos.get( i ).typeName ==  typeName ){
+                return this;
+            }
+        }
+
         ContactPhoto aux = new ContactPhoto();
         aux . type      = type;
         aux . typeId    = typeId;
@@ -44,6 +51,13 @@ public class ContactData {
     }
 
     public ContactData addSocialProfile(String type, String typeId, String typeName, String url){
+
+        for(int i = 0 ; i < this.social.size() ; i++ ){
+            if( this.social.get( i ).typeName ==  typeName ){
+                return this;
+            }
+        }
+
         ContactSocialProfile aux = new ContactSocialProfile();
         aux . type      = type;
         aux . typeId    = typeId;
@@ -54,6 +68,13 @@ public class ContactData {
     }
 
     public ContactData addWebsite(String url){
+
+        for(int i = 0 ; i < this.websites.size() ; i++ ){
+            if( this.websites.get( i ).url ==  url ){
+                return this;
+            }
+        }
+
         ContactWebsite aux = new ContactWebsite();
         aux . url = url;
         this.websites.add( aux );

@@ -14,9 +14,13 @@ public class EngineResult {
         try{
             uri = new URI( this.url );
             String domain = uri.getHost();
-            return domain.startsWith("www.") ? domain.substring(4) : domain;
+            return (domain.startsWith("www.") ? domain.substring(4) : domain).toLowerCase();
         }catch (URISyntaxException e){
             return "";
         }
+    }
+
+    public String getUrl(){
+        return this.url;
     }
 }

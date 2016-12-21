@@ -4,10 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import daniloramirezcr.SearchEngines.EngineResult;
+import daniloramirezcr.SearchEngines.GoogleResult;
 import daniloramirezcr.SearchEngines.GoogleSearchEngine;
 import daniloramirezcr.util.Config;
 import daniloramirezcr.util.FileManagement;
 import daniloramirezcr.util.Request;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.util.List;
 
 /**
  * Created by danilo on 14/12/2016.
@@ -81,9 +87,9 @@ public class FullContact {
     public FullContact searchTermGoogleAndAddToPerson(String term){
         GoogleSearchEngine ge = new GoogleSearchEngine();
         this.last_data.googleResults =  ge.search( term );
+        this.analyzeGoogleResults( this.last_data.googleResults );
         return this;
     }
-
 
 
     /*
@@ -112,8 +118,6 @@ public class FullContact {
         this.last_error = new FullContact_Error();
         this.last_error.setError_id( id ).setError_des( des );
     }
-
-
 
     private void createPersonFromResult(String result){
 
@@ -155,8 +159,6 @@ public class FullContact {
         try{ contactInfo = o.get("contactInfo").getAsJsonObject(); }catch (Exception e){}
         JsonObject demographic = null;
         try{ demographic = o.get("demographics").getAsJsonObject(); }catch (Exception e){}
-
-
         // The following lines were made to get the main informatino of the profile.
         try{ person.fullName = contactInfo.get("fullName").getAsString(); }catch (Exception e){}
         try{ person.givenName = contactInfo.get("givenName").getAsString(); }catch (Exception e){}
@@ -168,8 +170,6 @@ public class FullContact {
         try{ person.continent = demographic.get("locationDeduced").getAsJsonObject().get("continent").getAsJsonObject().get("name").getAsString(); }catch (Exception e){}
         try{ person.location_likelihood = demographic.get("locationDeduced").getAsJsonObject().get("likelihood").getAsFloat(); }catch (Exception e){}
         try{ person.location_general= demographic.get("locationGeneral").getAsString(); }catch (Exception e){}
-
-
             /*
             * Now we iterate over the photos, the social profiles and the websites to store them.
             * I created separate FullContact_Objects for each of this elements
@@ -187,9 +187,7 @@ public class FullContact {
             JsonObject aux = websites.get(i).getAsJsonObject();
             person.addWebsite( aux.get("url").getAsString() );
         }
-
         this.last_data = person; // We assign the person to the last person we are getting.
-
     }
 
     /*
@@ -209,6 +207,80 @@ public class FullContact {
         p.country_name = "";
         p.continent = "";
         this.last_data = p;
+    }
+
+    /*
+    * This method will analyze the google results so we can harvest even more information depending on the page.
+    * */
+    private void analyzeGoogleResults(List<GoogleResult> results){
+        for( int i = 0 ; i < results.size() ; i ++ ){
+            this.getInformationFromEngineResult( results.get(i) );
+        }
+    }
+
+    private void getInformationFromEngineResult(EngineResult result){
+        Request r = null;
+        String domain = result.getDomainName();
+        switch ( domain ){
+            case "facebook.com": //We have to make the Facebook analysis
+                r = new Request();
+                r.setUrl( result.getUrl() );
+                r.setCache( false );
+                r.setConnectionMethod("GET");
+                if(r.execute()){
+                    Document doc = Jsoup.parse( r.getLastResult() );
+                    String name = doc.select("#fb-timeline-cover-name").text();
+                    String profile_photo = doc.select(".profilePic.img").attr("src");
+                    if( this.last_data.fullName == ""   ){ //If it is empty then we are going to set it up
+                        this.last_data.fullName = name;
+                    }
+                    if(profile_photo != null && profile_photo != ""){
+                        this.last_data.addPhoto( "photo" , "fb" , "facebook" , profile_photo);
+                    }
+                    this.last_data.addSocialProfile( "social" , "fb" , "facebook" , result.getUrl() );
+                }
+                break;
+            case "github.com": //We have to make the Facebook analysis
+                r = new Request();
+                r.setUrl( result.getUrl() );
+                r.setCache( false );
+                r.setConnectionMethod("GET");
+                if(r.execute()){
+                    Document doc = Jsoup.parse( r.getLastResult() );
+                    String name = doc.select(".vcard-fullname").get(0).text();
+                    String profile_photo = doc.select(".avatar.width-full").get(0).attr("src");
+                    if( this.last_data.fullName == ""   ){ //If it is empty then we are going to set it up
+                        this.last_data.fullName = name;
+                    }
+                    if(profile_photo != null && profile_photo != ""){
+                        this.last_data.addPhoto( "photo" , "gh" , "github" , profile_photo);
+                    }
+                    this.last_data.addSocialProfile( "social" , "gh" , "github" , result.getUrl() );
+                }
+                break;
+            case "twitter.com": //We have to make the Facebook analysis
+                r = new Request();
+                r.setUrl( result.getUrl() );
+                r.setCache( false );
+                r.setConnectionMethod("GET");
+                if(r.execute()){
+                    Document doc = Jsoup.parse( r.getLastResult() );
+                    String name = doc.select(".ProfileHeaderCard-nameLink").get(0).text();
+                    String profile_photo = doc.select(".ProfileAvatar-image").get(0).attr("src");
+                    if( this.last_data.givenName == ""   ){ //If it is empty then we are going to set it up
+                        this.last_data.givenName = name;
+                    }
+                    if(profile_photo != null && profile_photo != ""){
+                        this.last_data.addPhoto( "photo" , "tw" , "twitter" , profile_photo);
+                    }
+                    this.last_data.addSocialProfile( "social" , "tw" , "twitter" , result.getUrl() );
+                }
+                break;
+            default:
+                break;
+
+        }
+
     }
 
 

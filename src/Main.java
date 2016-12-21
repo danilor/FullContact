@@ -22,19 +22,18 @@ public class Main {
    
     public static void main( String[] args ){
         Console.l("Welcome to the FullContact Magic Search System");
-        String e = Console.readString("Please insert the email you want to search for: ");
+        //String e = Console.readString("Please insert the email you want to search for: ");
         Config c = new Config();
         String key = c.read("fullcontact_key");
         FullContact fc = new FullContact();
         fc.setApiKey( key );
 
         Console.l("Please wait while we harvest the information...");
-        //fc.lookByEmail( "" );
-        fc.lookByEmail( e );
+        fc.lookByEmail( "zuhrig@lbaabogados.com" );
+        //fc.lookByEmail( e );
         ContactData person = fc.getLastData();
 
         if(person != null){
-
             /*
         * Its time to show all the person information.
         * */
@@ -46,7 +45,6 @@ public class Main {
             Console.l("Country Name: " + person.country_name);
             Console.l("Country Cod: " + person.country_code);
             Console.l("Continent: " + person.continent);
-
             if( person.photos.size() > 0 ){
                 Console.l( "Photos found." );
                 for( int i = 0 ; i < person.photos.size() ; i++ ){
@@ -65,7 +63,6 @@ public class Main {
                     Console.l( " - " + person.websites.get(i).url );
                 }
             }
-
             if( person.googleResults.size() > 0 ){
                 Console.l( "Google Results found." );
                 for( int i = 0 ; i < person.googleResults.size() ; i++ ){
@@ -77,9 +74,7 @@ public class Main {
                 }
             }
         }else{
-
             Console.e("No information found for this email.");
-
         }
 
 

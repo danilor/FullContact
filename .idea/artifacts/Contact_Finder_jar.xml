@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="Contact Finder:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Contact_Finder_jar</output-path>
+    <root id="root">
+      <element id="archive" name="Contact Finder.jar">
+        <element id="module-output" name="Contact Finder" />
+      </element>
+      <element id="library" level="project" name="com.google.code.gson:gson:2.8.0" />
+      <element id="library" level="project" name="org.jsoup:jsoup:1.10.11" />
+      <element id="library" level="project" name="javax.mail:mail:1.4" />
+    </root>
+  </artifact>
+</component>
